@@ -51,7 +51,6 @@ int main(){
 
     cout << "which image filter would you like to apply?" << endl;
     cout << "\t\t 1 - Blur" << endl;
-    cout << "\t\t 1 - Red Noise" << endl;
 
 
     cout << "Your choice: ";
@@ -95,6 +94,8 @@ static bool openImageFromFilename(GBufferedImage &img, string filename) {
     }
     return true;
 }
+
+
 static bool saveImageToFilename(const GBufferedImage &img, string filename) {
     try {
         img.save(filename);
@@ -103,6 +104,8 @@ static bool saveImageToFilename(const GBufferedImage &img, string filename) {
     }
     return true;
 }
+
+
 
 void ImageBlurFilter(GBufferedImage &img , GWindow &gw){
 
@@ -117,7 +120,6 @@ void ImageBlurFilter(GBufferedImage &img , GWindow &gw){
     for(int row = 0 ; row < imgGridRows - 1 ; row++){
         for(int col = 0 ; col < imgGridCols - 1 ; col++){
             try{
-
 
                 // Upper Portion
                 int UpLeftCell  = imgGrid[row+1][col-1];
@@ -175,65 +177,12 @@ void ImageBlurFilter(GBufferedImage &img , GWindow &gw){
     gw.add(&img,0,0); // show image to window
 }
 
-void ImageRedNoiseFilter(GBufferedImage &img , GWindow &gw){
-
-
-    Grid<int> imgGrid = img.toGrid();
-
-
-    int imgGridCols = imgGrid.numCols();
-    int imgGridRows = imgGrid.numRows();
-
-
-    for(int row = 0 ; row < imgGridRows - 1 ; row++){
-        for(int col = 0 ; col < imgGridCols - 1 ; col++){
-            try{
-
-
-                // Upper Portion
-                int UpLeftCell  = imgGrid[row+1][col-1];
-                int UptMiddleCell  = imgGrid[row+1][col];
-                int UpRightCell = imgGrid[row+1][col+1];
-
-                // Middle Portion
-                int leftCell    = imgGrid[row][col-1];
-                int currentCell = imgGrid[row][col];
-                int rightCell   = imgGrid[row][col+1];
-
-
-                // Down Portion
-                int DowntLeftCell   =  imgGrid[row-1][col-1];
-                int DowntMiddleCell =  imgGrid[row-1][col];
-                int DowntRightCell  =  imgGrid[row-1][col+1];
-
-
-                imgGrid[row][col] = (UpLeftCell+UptMiddleCell+UpRightCell+leftCell+currentCell+rightCell+DowntLeftCell+DowntMiddleCell+DowntRightCell)/9;
-
-
-            }catch(exception e){
-
-            }
-        }
-    }
-
-
-
-    img.fromGrid(imgGrid); // grid to image
-
-    gw.setSize(img.getWidth(), img.getHeight());
-
-    gw.add(&img,0,0); // show image to window
-}
-
 
 bool selectFilter(GBufferedImage &img , GWindow &gw){
     while(true){
         int choseFilter = getInteger();
         if(choseFilter == 1){
             ImageBlurFilter(img , gw);
-            return true;
-        }else if(choseFilter == 2){
-            ImageRedNoiseFilter(img , gw);
             return true;
         }else{
             cout << "Invalid selection. try again" << endl;
